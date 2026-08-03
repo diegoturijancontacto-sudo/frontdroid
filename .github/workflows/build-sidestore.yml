@@ -7,11 +7,16 @@ jobs:
   build-ios:
     runs-on: macos-latest
     steps:
+      - name: 🛑 Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.12.1
+        with:
+          access_token: ${{ github.token }}
+
       - name: 📂 Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 🟢 Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18.x
           cache: 'npm'
@@ -30,7 +35,7 @@ jobs:
           eas build --platform ios --profile preview --local --non-interactive
 
       - name: 🚀 Upload IPA Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ios-sidestore-app
           path: ./*.ipa
