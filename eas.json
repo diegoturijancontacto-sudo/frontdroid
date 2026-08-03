@@ -12,6 +12,9 @@
     "preview": {
       "developmentClient": true,
       "distribution": "internal",
+      "ios": {
+        "simulator": false
+      },
       "withoutCredentials": true
     },
     "production": {
