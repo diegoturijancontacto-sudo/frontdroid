@@ -10,7 +10,11 @@
       "withoutCredentials": true
     },
     "preview": {
+      "developmentClient": true,
       "distribution": "internal",
+      "ios": {
+        "simulator": true
+      },
       "withoutCredentials": true
     },
     "production": {
