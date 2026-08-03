@@ -11,7 +11,7 @@
     },
     "preview": {
       "developmentClient": true,
-      "distribution": "simulator",
+      "distribution": "internal",
       "withoutCredentials": true
     },
     "production": {
