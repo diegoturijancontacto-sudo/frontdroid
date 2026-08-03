@@ -34,8 +34,15 @@ jobs:
         run: |
           eas build --platform ios --profile preview --local --non-interactive
 
+      - name: 🔍 Find and Move IPA
+        run: |
+          echo "Buscando archivos .ipa generados:"
+          find . -name "*.ipa"
+          # Mueve cualquier archivo .ipa encontrado a la carpeta raíz del proyecto
+          find . -name "*.ipa" -exec cp {} ./ \;
+
       - name: 🚀 Upload IPA Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ios-sidestore-app
-          path: '**/*.ipa' # Búsqueda recursiva para encontrar el IPA donde sea que se haya generado
+          path: ./*.ipa
