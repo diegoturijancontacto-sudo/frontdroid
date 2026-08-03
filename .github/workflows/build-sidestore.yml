@@ -1,48 +1,28 @@
-name: Build iOS Local for SideStore
+name: Build iOS App
 
 on:
   workflow_dispatch:
 
 jobs:
-  build-ios:
+  build:
     runs-on: macos-latest
     steps:
-      - name: 🛑 Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.12.1
-        with:
-          access_token: ${{ github.token }}
-
-      - name: 📂 Checkout repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🟢 Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
-          cache: 'npm'
+          node-version: 18
 
-      - name: ⚡ Setup Expo and EAS
+      - name: Setup EAS
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: npm install
 
-      - name: 🍎 Build iOS Locally
-        run: |
-          eas build --platform ios --profile preview --local --non-interactive
-
-      - name: 🔍 Find and Move IPA
-        run: |
-          echo "Buscando archivos .ipa generados:"
-          find . -name "*.ipa"
-          # Mueve cualquier archivo .ipa encontrado a la carpeta raíz del proyecto
-          find . -name "*.ipa" -exec cp {} ./ \;
-
-      - name: 🚀 Upload IPA Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ios-sidestore-app
-          path: ./*.ipa
+      - name: Run EAS Build
+        run: eas build --platform ios --profile preview --local --non-interactive
