@@ -40,8 +40,8 @@ jobs:
         run: |
           cd ios
           xcodebuild archive \
-            -workspace *.xcworkspace \
-            -scheme "$(ls *.xcworkspace | sed 's/.xcworkspace//')" \
+            -workspace MiAppExpo.xcworkspace \
+            -scheme MiAppExpo \
             -configuration Release \
             -archivePath "$GITHUB_WORKSPACE/build/App.xcarchive" \
             -destination "generic/platform=iOS" \
