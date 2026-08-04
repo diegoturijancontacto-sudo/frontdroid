@@ -36,12 +36,28 @@ jobs:
           cd ios
           pod install --repo-update
 
+      - name: 🔎 Detectar workspace y scheme
+        id: detect
+        run: |
+          cd ios
+          echo "Contenido de ios/:"
+          ls -la
+
+          WORKSPACE=$(ls -d *.xcworkspace | head -n 1)
+          echo "Workspace encontrado: $WORKSPACE"
+
+          SCHEME=$(xcodebuild -workspace "$WORKSPACE" -list | awk '/Schemes:/{flag=1; next} flag && NF{print $1; exit}')
+          echo "Scheme encontrado: $SCHEME"
+
+          echo "workspace=$WORKSPACE" >> "$GITHUB_OUTPUT"
+          echo "scheme=$SCHEME" >> "$GITHUB_OUTPUT"
+
       - name: 🍎 Build iOS (unsigned, para sideload)
         run: |
           cd ios
           xcodebuild archive \
-            -workspace MiAppExpo.xcworkspace \
-            -scheme MiAppExpo \
+            -workspace "${{ steps.detect.outputs.workspace }}" \
+            -scheme "${{ steps.detect.outputs.scheme }}" \
             -configuration Release \
             -archivePath "$GITHUB_WORKSPACE/build/App.xcarchive" \
             -destination "generic/platform=iOS" \
