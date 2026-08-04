@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Frontdroid",
-    "slug": "frontdroid",
+    "slug": "MiAppExpo",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
