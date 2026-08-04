@@ -1,8 +1,6 @@
 name: Build iOS Local for SideStore
-
 on:
   workflow_dispatch:
-
 jobs:
   build-ios:
     runs-on: macos-latest
@@ -30,13 +28,37 @@ jobs:
       - name: 📦 Install dependencies
         run: npm install
 
-      - name: 🍎 Build iOS Locally
+      - name: 🛠️ Prebuild proyecto nativo iOS
+        run: npx expo prebuild --platform ios --clean
+
+      - name: 🍫 Instalar Pods
         run: |
-          eas build --platform ios --profile preview --local --non-interactive
+          cd ios
+          pod install --repo-update
+
+      - name: 🍎 Build iOS (unsigned, para sideload)
+        run: |
+          cd ios
+          xcodebuild archive \
+            -workspace *.xcworkspace \
+            -scheme "$(ls *.xcworkspace | sed 's/.xcworkspace//')" \
+            -configuration Release \
+            -archivePath "$GITHUB_WORKSPACE/build/App.xcarchive" \
+            -destination "generic/platform=iOS" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            DEVELOPMENT_TEAM=""
+
+      - name: 📦 Empaquetar IPA sin firmar
+        run: |
+          cd "$GITHUB_WORKSPACE/build/App.xcarchive/Products/Applications"
+          mkdir Payload
+          mv *.app Payload/
+          zip -r "$GITHUB_WORKSPACE/App-unsigned.ipa" Payload
 
       - name: 🔍 Find and Move IPA
         run: |
-          # Busca recursivamente el archivo .ipa y lo coloca en la raíz del workspace
           find . -name "*.ipa" -exec cp {} ./ \;
           ls -la ./
 
